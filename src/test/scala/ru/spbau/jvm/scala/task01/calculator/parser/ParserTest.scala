@@ -29,10 +29,10 @@ class ParserTest extends FunSuite with BeforeAndAfter {
     val string = "1 + (-1)"
     val got = new Parser(calculator).parse(string)
     val expected = AST.BinOperator("+"
-      , Some(AST.Number(1))
-      , Some(AST.BinOperator("-"
-        , Some(AST.Number(0))
-        , Some(AST.Number(1)))))
+      , AST.Number(1)
+      , AST.BinOperator("-"
+        , AST.Number(0)
+        , AST.Number(1)))
 
     assert(expected === got)
   }
@@ -42,12 +42,12 @@ class ParserTest extends FunSuite with BeforeAndAfter {
     val got = new Parser(calculator).parse(string)
     val expected =
       AST.BinOperator("+"
-        , Some(AST.BinOperator("+"
-          , Some(AST.BinOperator("+"
-            , Some(AST.Number(1))
-            , Some(AST.Number(1))))
-          , Some(AST.Number(1))))
-        , Some(AST.Number(1)))
+        , AST.BinOperator("+"
+          , AST.BinOperator("+"
+            , AST.Number(1)
+            , AST.Number(1))
+          , AST.Number(1))
+        , AST.Number(1))
 
     assert(expected === got)
   }
@@ -57,14 +57,15 @@ class ParserTest extends FunSuite with BeforeAndAfter {
     val got = new Parser(calculator).parse(string)
     val expected =
       AST.BinOperator("+"
-        , Some(AST.BinOperator("+"
-          , Some(AST.BinOperator("+"
-            , Some(AST.Number(1))
-            , Some(AST.Number(1))))
-          , Some(AST.BinOperator("*"
-            , Some(AST.BinOperator("*", Some(AST.Number(1)), Some(AST.Number(1))))
-            , Some(AST.Number(1))))))
-        , Some(AST.Number(1)))
+        , AST.BinOperator("+"
+          , AST.BinOperator("+", AST.Number(1)
+            , AST.Number(1))
+          , AST.BinOperator("*"
+            , AST.BinOperator("*"
+              , AST.Number(1)
+              , AST.Number(1))
+            , AST.Number(1)))
+        , AST.Number(1))
 
     assert(expected === got)
   }
@@ -73,8 +74,12 @@ class ParserTest extends FunSuite with BeforeAndAfter {
     val string = "(1 + 1) + ((1 + 1))"
     val got = new Parser(calculator).parse(string)
     val expected = AST.BinOperator("+",
-      Some(AST.BinOperator("+", Some(AST.Number(1)), Some(AST.Number(1)))),
-      Some(AST.BinOperator("+", Some(AST.Number(1)), Some(AST.Number(1)))))
+      AST.BinOperator("+"
+        , AST.Number(1)
+        , AST.Number(1)),
+      AST.BinOperator("+"
+        , AST.Number(1)
+        , AST.Number(1)))
 
     assert(expected === got)
   }
@@ -83,8 +88,8 @@ class ParserTest extends FunSuite with BeforeAndAfter {
     val string = "1 + (answer(42))"
     val got = new Parser(calculator).parse(string)
     val expected = AST.BinOperator("+"
-      , Some(AST.Number(1))
-      , Some(AST.Function("answer", AST.Number(42))))
+      , AST.Number(1)
+      , AST.Function("answer", AST.Number(42)))
 
     assert(expected === got)
   }

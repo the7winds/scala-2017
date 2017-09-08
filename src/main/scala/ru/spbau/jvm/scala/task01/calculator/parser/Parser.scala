@@ -31,17 +31,17 @@ class Parser(calculator: Calculator) {
         val ops_stack = e.getValue
         if (!ops_stack.empty()) {
           val Tokens.Operator(op) = ops_stack.pop()
-          val tree = AST.BinOperator(op, None, Some(treeStack.pop()))
+          val tree = AST.BinOperator(op, null, treeStack.pop())
           var prev = tree
 
           while (!ops_stack.empty()) {
             val Tokens.Operator(op) = ops_stack.pop()
-            val cur = AST.BinOperator(op, None, Some(treeStack.pop()))
-            prev.lhs = Some(cur)
+            val cur = AST.BinOperator(op, null, treeStack.pop())
+            prev.lhs = cur
             prev = cur
           }
 
-          prev.lhs = Some(treeStack.pop())
+          prev.lhs = treeStack.pop()
 
           treeStack.push(tree)
         }
