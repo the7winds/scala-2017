@@ -2,13 +2,11 @@ package ru.spbau.jvm.scala.task01.calculator.parser
 
 import java.util
 
-import ru.spbau.jvm.scala.task01.calculator.parser.Tokens.{_}
+import ru.spbau.jvm.scala.task01.calculator.parser.Tokens._
 
 class Tokenizer(string: String) {
 
   val OPERATOR_STRING = "+-/*$#?"
-
-  class TokenizerException(text: String) extends Exception(text)
 
   private val list = new util.LinkedList[Token]()
 

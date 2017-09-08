@@ -25,14 +25,14 @@ class CalculatorTest extends FunSuite with BeforeAndAfter {
 
   test("parse 1 + (-1)") {
     val string = "1 + (-1)"
-    val got = calculator.submitStringExpression(string)
+    val Some(got) = calculator.submitStringExpression(string)
     val expected = 0
     assert(expected === got)
   }
 
   test("parse 1 + (2 - sqrt(4)) - 1") {
     val string = "1 + (2 - sqrt(4)) - 1"
-    val got = calculator.submitStringExpression(string)
+    val Some(got) = calculator.submitStringExpression(string)
     val expected = 0
     assert(expected === got)
   }

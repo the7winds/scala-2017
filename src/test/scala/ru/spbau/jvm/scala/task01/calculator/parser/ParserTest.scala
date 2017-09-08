@@ -97,7 +97,7 @@ class ParserTest extends FunSuite with BeforeAndAfter {
   test("fail caused by wrong balance") {
     val string = "(1 + 1) + (1 + 1))"
     val parser = new Parser(calculator)
-    intercept[parser.ParserException] {
+    intercept[ParserException] {
       parser.parse(string)
     }
   }
@@ -105,7 +105,7 @@ class ParserTest extends FunSuite with BeforeAndAfter {
   test("fail caused by wrong order") {
     val string = "(1 + 1) + + (1 + 1))"
     val parser = new Parser(calculator)
-    intercept[parser.ParserException] {
+    intercept[ParserException] {
       parser.parse(string)
     }
   }
@@ -113,7 +113,7 @@ class ParserTest extends FunSuite with BeforeAndAfter {
   test("fail caused by incomplete expression") {
     val string = "1 + 1 + "
     val parser = new Parser(calculator)
-    intercept[parser.ParserException] {
+    intercept[ParserException] {
       parser.parse(string)
     }
   }
@@ -121,7 +121,7 @@ class ParserTest extends FunSuite with BeforeAndAfter {
   test("fail caused by absence of arguments") {
     val string = "answer()"
     val parser = new Parser(calculator)
-    intercept[parser.ParserException] {
+    intercept[ParserException] {
       parser.parse(string)
     }
   }
@@ -129,7 +129,7 @@ class ParserTest extends FunSuite with BeforeAndAfter {
   test("fail caused by incomplete function expression") {
     val string = "answer("
     val parser = new Parser(calculator)
-    intercept[parser.ParserException] {
+    intercept[ParserException] {
       parser.parse(string)
     }
   }

@@ -43,7 +43,7 @@ class TokenizerTest extends FunSuite {
 
   test("fail caused by mixing numbers and letters") {
     val tokenizer = new Tokenizer("4a")
-    intercept[tokenizer.TokenizerException] {
+    intercept[TokenizerException] {
       tokenizer.tokenize()
     }
   }

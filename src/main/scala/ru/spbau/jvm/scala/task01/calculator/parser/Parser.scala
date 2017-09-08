@@ -11,7 +11,7 @@ class Parser(calculator: Calculator) {
   case class Parenthesis() extends ContextType
   case class Global() extends ContextType
 
-  class ParseContext(val contextType: ContextType) {
+  private class ParseContext(val contextType: ContextType) {
 
     val priorityStacks = new util.HashMap[Int, util.Stack[Tokens.Operator]]
     val treeStack = new util.Stack[AST.Node]
@@ -97,8 +97,6 @@ class Parser(calculator: Calculator) {
     context.peek().foldStacks()
     context.pop().treeStack.pop()
   }
-
-  class ParserException(text: String) extends Exception(text)
 
   private def validateSyntaxAndFixUnarMinus(tokens: util.List[Tokens.Token]): util.List[Tokens.Token] = {
     var balance = 0
