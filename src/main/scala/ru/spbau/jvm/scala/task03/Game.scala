@@ -1,6 +1,13 @@
 package ru.spbau.jvm.scala.task03
 
+import java.io.File
+import java.net.URL
+import java.nio.file.{Files, Paths}
+
 import info.mukel.telegrambot4s.models.Message
+
+import scala.util.Random
+import sys.process._
 
 trait GuessStatus
 case class GuessSuccess() extends GuessStatus
@@ -9,7 +16,7 @@ case class GuessAlready() extends GuessStatus
 
 class HangmanGame(val bot: HangmanBot) {
 
-  private val context = new HangmanContext("ALPHABET", "letters")
+  private val context = new HangmanContext(Game.getRandomWord())
 
   private def getState(): String = {
     s"""
@@ -17,8 +24,6 @@ class HangmanGame(val bot: HangmanBot) {
        |lives: ${context.lives}
       """.stripMargin
   }
-
-  private def getHint(): String = s"Hint: ${context.hint}"
 
   def onNew()(implicit message: Message): Unit = {
     bot.reply(getState())
@@ -32,21 +37,17 @@ class HangmanGame(val bot: HangmanBot) {
       case GuessAlready() => "you already tried this letter"
     })
 
-    bot.reply(getState())
-
     if (context.gameFinished()) {
       status match {
         case GuessSuccess() => bot.reply("Win")
-        case GuessFailed() => bot.reply("Failed")
+        case GuessFailed() => bot.reply(s"Failed. The word was ${context.word}")
       }
+    } else {
+      bot.reply(getState())
     }
   }
 
-  def onHint()(implicit message: Message): Unit = {
-    bot.reply(getHint())
-  }
-
-  class HangmanContext(val word: String, val hint: String) {
+  class HangmanContext(val word: String) {
     final val MAX_LIVES = 5
 
     var closed = word.length
@@ -83,5 +84,21 @@ class HangmanGame(val bot: HangmanBot) {
     }
 
     def gameFinished(): Boolean = closed == 0 || lives == 0
+  }
+}
+
+object Game {
+  private val dictionaryURL = new URL("http://www.desiquintans.com/downloads/nounlist/nounlist.txt")
+  private val dictionaryPath = Files.createTempFile("dictionary", "tmp")
+  private val _ = { dictionaryURL #> dictionaryPath.toFile !! }
+  private val wordsNumber = Files.lines(dictionaryPath).count().asInstanceOf[Int]
+
+  def getRandomWord(): String = {
+    val n = new Random().nextInt(wordsNumber)
+    Files.lines(dictionaryPath)
+      .skip(n)
+      .findFirst()
+      .get()
+      .toUpperCase
   }
 }

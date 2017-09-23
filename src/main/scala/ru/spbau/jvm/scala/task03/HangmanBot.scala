@@ -49,13 +49,4 @@ class HangmanBot(val token: String) extends TelegramBot with Polling with Comman
       }
     }
   }
-
-  onCommand('hint) {
-    implicit msg => {
-      games.get(msg.chat.id) match {
-        case Some(game) => game.onHint();
-        case _ => reply("The game haven't started yet. Type /new to start.")
-      }
-    }
-  }
 }
