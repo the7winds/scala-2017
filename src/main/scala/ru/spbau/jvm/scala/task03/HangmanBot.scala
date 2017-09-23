@@ -8,18 +8,22 @@ import scala.collection.mutable
 
 class HangmanBot(val token: String) extends TelegramBot with Polling with Commands {
 
-  val games = new mutable.HashMap[Long, HangmanGame]()
+  val games = new mutable.HashMap[Long, Game]()
 
   onMessage {
     implicit msg: Message => {
       games.get(msg.chat.id) match {
         case Some(game) =>
-          msg.text.foreach {
-            text => {
-              val TTT = raw"^\w$$".r.findFirstIn(text)
-              TTT match {
-                case Some(_) => game.onTry(text.charAt(0).toUpper)
-                case _ => ()
+          if (game.finished()) {
+            games.remove(msg.chat.id)
+          } else {
+            msg.text.foreach {
+              text => {
+                val TTT = raw"^\w$$".r.findFirstIn(text)
+                TTT match {
+                  case Some(_) => game.onTry(text.charAt(0).toUpper)
+                  case _ => ()
+                }
               }
             }
           }
@@ -29,8 +33,8 @@ class HangmanBot(val token: String) extends TelegramBot with Polling with Comman
   }
 
   private val help =
-    """/new to start new game
-      |/hint to show hint for the word
+    """Traditional game. Bot make a word, you guess it.
+      |/new to start new game
       |/help to show this information
     """.stripMargin
 
@@ -41,7 +45,7 @@ class HangmanBot(val token: String) extends TelegramBot with Polling with Comman
   onCommand('new) {
     implicit msg => {
       try {
-        val game = new HangmanGame(this)
+        val game = new Game(this)
         games.put(msg.chat.id, game)
         game.onNew()
       } catch {
