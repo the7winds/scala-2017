@@ -16,7 +16,7 @@ class Game(val bot: HangmanBot) {
     val arr = new Array[Char](word.length)
     var i = 0
     for (i <- 0 until arr.length())  {
-      arr.update(i, '*')
+      arr.update(i, '⬜')
     }
 
     arr
@@ -29,7 +29,7 @@ class Game(val bot: HangmanBot) {
   private def getState(): String = {
     s"""
        |${representation.mkString}
-       |lives: $lives
+       |❤️: $lives
       """.stripMargin
   }
 
