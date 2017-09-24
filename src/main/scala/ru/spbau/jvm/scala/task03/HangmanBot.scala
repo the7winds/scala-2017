@@ -2,7 +2,8 @@ package ru.spbau.jvm.scala.task03
 
 import info.mukel.telegrambot4s.api.declarative.Commands
 import info.mukel.telegrambot4s.api.{Polling, TelegramBot}
-import info.mukel.telegrambot4s.models.Message
+import info.mukel.telegrambot4s.methods.SendGame
+import info.mukel.telegrambot4s.models.{InlineKeyboardButton, InlineKeyboardMarkup, Message}
 
 import scala.collection.mutable
 
@@ -44,13 +45,9 @@ class HangmanBot(val token: String) extends TelegramBot with Polling with Comman
 
   onCommand('new) {
     implicit msg => {
-      try {
-        val game = new Game(this)
-        games.put(msg.chat.id, game)
-        game.onNew()
-      } catch {
-        case e: Exception => println(e.getMessage)
-      }
+      val game = new Game(this)
+      games.put(msg.chat.id, game)
+      game.onNew()
     }
   }
 }
