@@ -52,12 +52,12 @@ case class TreeMultisetNode[+A](v: A, c: Int, left: TreeMultiset[A], right: Tree
       case w => w
     }
 
-  override def get[B >: A](e: B): Option[Int] =
+  override def apply[B >: A](e: B): Option[Int] =
     if (e == v) Some(c) else {
       if (e.hashCode() < v.hashCode()) {
-        left.get(e)
+        left.apply(e)
       } else {
-        right.get(e)
+        right.apply(e)
       }
     }
 

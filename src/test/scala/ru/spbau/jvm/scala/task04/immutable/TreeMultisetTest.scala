@@ -8,15 +8,15 @@ class TreeMultisetTest extends FlatSpec with Matchers {
     var cnt = 0
 
     single.size should be (1)
-    single.get(42) should be (Some(1))
+    single.apply(42) should be (Some(1))
   }
 
   "A multiset" should "construct big set from sequence" in {
     val set = TreeMultiset('3', '1', '2', '3', '2', '3')
 
-    set.get('1') should be (Some(1))
-    set.get('2') should be (Some(2))
-    set.get('3') should be (Some(3))
+    set.apply('1') should be (Some(1))
+    set.apply('2') should be (Some(2))
+    set.apply('3') should be (Some(3))
   }
 
   "A multiset" should "deconstruct in sequence" in {
@@ -28,23 +28,22 @@ class TreeMultisetTest extends FlatSpec with Matchers {
   }
 
   "Function" should "map int to string" in {
-    val intSet = TreeMultiset(1, 3, 3, 2)
-    val stringSet = intSet.map { _.toString }
-    stringSet.get("1") should be (Some(1))
-    stringSet.get("2") should be (Some(1))
-    stringSet.get("3") should be (Some(2))
+    val set = TreeMultiset(1, 3, 2, 3, 2, 3).map { _.toString }
+    set.apply("1") should be (Some(1))
+    set.apply("2") should be (Some(2))
+    set.apply("3") should be (Some(3))
   }
 
   "Function" should "flatmap string set to char set" in {
     val stringSet = TreeMultiset("abba", "abba", "dabba")
     val charSet: TreeMultiset[Char] = stringSet.flatMap {
-      v => v.foldLeft(TreeMultiset[Char]()) { (s, ch) => TreeMultiset.apply(ch, s) }
+      v => v.foldLeft(TreeMultiset[Char]()) { (s, ch) => TreeMultiset(s, ch) }
     }
 
-    charSet.get('a') should be (Some(6))
-    charSet.get('b') should be (Some(6))
-    charSet.get('d') should be (Some(1))
-    charSet.get('c') should be (None)
+    charSet.apply('a') should be (Some(6))
+    charSet.apply('b') should be (Some(6))
+    charSet.apply('d') should be (Some(1))
+    charSet.apply('c') should be (None)
   }
 
   it should "find element by predicate" in {

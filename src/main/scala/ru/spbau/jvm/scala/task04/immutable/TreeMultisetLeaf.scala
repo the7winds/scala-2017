@@ -17,7 +17,7 @@ case class TreeMultisetLeaf[+A]() extends TreeMultiset[A] {
 
   override def find(p: (A) => Boolean): None.type = None
 
-  override def get[B >: A](v: B): None.type = None
+  override def apply[B >: A](v: B): None.type = None
 
   override def ||[B >: A](t: TreeMultiset[B]): TreeMultiset[B] = t
 

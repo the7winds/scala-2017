@@ -8,7 +8,7 @@ trait TreeMultiset[+A] {
   def map[B](f: A => B): TreeMultiset[B]
   def flatMap[B](f: A => TreeMultiset[B]): TreeMultiset[B]
   def find(p: A => Boolean): Option[Int]
-  def get[B >: A](v: B): Option[Int]
+  def apply[B >: A](v: B): Option[Int]
   def toList(): List[A]
   def ||[B >: A](t: TreeMultiset[B]): TreeMultiset[B]
   def &&[B >: A](t: TreeMultiset[B]): TreeMultiset[B]
