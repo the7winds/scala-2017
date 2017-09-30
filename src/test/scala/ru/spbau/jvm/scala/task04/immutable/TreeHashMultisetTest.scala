@@ -2,7 +2,7 @@ package ru.spbau.jvm.scala.task04.immutable
 
 import org.scalatest._
 
-class TreeMultisetTest extends FlatSpec with Matchers {
+class TreeHashMultisetTest extends FlatSpec with Matchers {
   "A multiset" should "construct from a value" in {
     val single = TreeMultiset(42)
     var cnt = 0

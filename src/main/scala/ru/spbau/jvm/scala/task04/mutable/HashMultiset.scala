@@ -2,12 +2,12 @@ package ru.spbau.jvm.scala.task04.mutable
 
 import scala.collection.mutable
 
-class Multiset[T] {
+class HashMultiset[T] {
   private val S = 1000
   private val set = new Array[mutable.MutableList[(T, Int)]](S)
 
-  def filter(p: (T, Int) => Boolean): Multiset[T] = {
-    val s = new Multiset[T]
+  def filter(p: (T, Int) => Boolean): HashMultiset[T] = {
+    val s = new HashMultiset[T]
 
     foreach {
       (v, c) => if (p(v, c)) { s.add(v, c) }
@@ -16,8 +16,8 @@ class Multiset[T] {
     return s
   }
 
-  def map[K](f: (T, Int) => (K, Int)): Multiset[K] = {
-    val s = new Multiset[K]
+  def map[K](f: (T, Int) => (K, Int)): HashMultiset[K] = {
+    val s = new HashMultiset[K]
 
     foreach {
       (v, c1) => {
@@ -29,8 +29,8 @@ class Multiset[T] {
     return s
   }
 
-  def flatMap[K](f: (T, Int) => Multiset[K]): Multiset[K] = {
-    val s = new Multiset[K]
+  def flatMap[K](f: (T, Int) => HashMultiset[K]): HashMultiset[K] = {
+    val s = new HashMultiset[K]
 
     foreach {
       (v, c) => {
@@ -41,7 +41,7 @@ class Multiset[T] {
     return s
   }
 
-  def add(e: T, c: Int): Multiset[T] = {
+  def add(e: T, c: Int): HashMultiset[T] = {
     var i = e.hashCode() % S
     var l = set{i}
 
@@ -73,7 +73,7 @@ class Multiset[T] {
     return this
   }
 
-  def add(s: Multiset[T]): Multiset[T] = {
+  def add(s: HashMultiset[T]): HashMultiset[T] = {
     s.foreach { (v, c) => add(v, c); }
     return this
   }
@@ -107,14 +107,14 @@ class Multiset[T] {
   }
 }
 
-object Multiset {
-  def apply[T](e: T*): Multiset[T] = {
-    val s = new Multiset[T]()
+object HashMultiset {
+  def apply[T](e: T*): HashMultiset[T] = {
+    val s = new HashMultiset[T]()
     e.foreach { s.add(_, 1) }
     return s
   }
 
-  def unapplySeq[T](e: Multiset[T]): Option[Seq[(T, Int)]] = {
+  def unapplySeq[T](e: HashMultiset[T]): Option[Seq[(T, Int)]] = {
     val builder = Seq.newBuilder[(T, Int)]
     e.foreach { (v, c) => builder += ((v, c))  }
     return Some(builder.result())
