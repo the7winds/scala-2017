@@ -62,4 +62,13 @@ class TreeMultisetTest extends FlatSpec with Matchers {
       case None => ()
     }
   }
+
+  it should "iterate over set" in {
+    var size = 0
+    for (_ <- TreeMultiset(1, 2, 1, 3, 4, 5)) {
+      size += 1
+    }
+
+    size should be (6)
+  }
 }

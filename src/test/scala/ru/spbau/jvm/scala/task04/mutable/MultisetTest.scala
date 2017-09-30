@@ -8,7 +8,9 @@ class MultisetTest extends FlatSpec with Matchers {
     val single = Multiset(42)
     var cnt = 0
 
-    single.foreach { (_, c) => cnt += c }
+    for ((_, c) <- single) {
+      cnt += c
+    }
 
     cnt should be (1)
   }
