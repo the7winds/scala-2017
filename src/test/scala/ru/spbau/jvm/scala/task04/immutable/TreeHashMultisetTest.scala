@@ -70,4 +70,17 @@ class TreeHashMultisetTest extends FlatSpec with Matchers {
 
     size should be (6)
   }
+
+  "Sets" should "intersects" in {
+    val s1 = TreeMultiset(1, 2, 3, 3, 4, 5)
+    val s2 = TreeMultiset(1, 3, 3, 6)
+    val s = s1 && s2
+
+    s.apply(1) should be (Some(1))
+    s.apply(2) should be (None)
+    s.apply(3) should be (Some(2))
+    s.apply(4) should be (None)
+    s.apply(5) should be (None)
+    s.apply(6) should be (None)
+  }
 }
