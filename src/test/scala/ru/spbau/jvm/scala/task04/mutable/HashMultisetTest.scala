@@ -2,25 +2,28 @@ package ru.spbau.jvm.scala.task04.mutable
 
 import org.scalatest._
 
+import scala.collection.mutable
+
 class HashMultisetTest extends FlatSpec with Matchers {
 
   "A multiset" should "construct from a value" in {
     val single = HashMultiset(42)
     var cnt = 0
 
-    for ((_, c) <- single) {
-      cnt += c
+    var ml = mutable.MutableList(1, 2, 3, 4)
+    for (x <- single) {
+      cnt += 1
     }
 
     cnt should be (1)
   }
 
   "A multiset" should "construct big set from sequence" in {
-    val set = HashMultiset(1, 2, 1, 3, 3)
+    val set = HashMultiset(1, 2, 3, 2, 3, 3)
 
-    set.apply(1) should be (2)
-    set.apply(2) should be (1)
-    set.apply(3) should be (2)
+    set.apply(1) should be (Some(1))
+    set.apply(2) should be (Some(2))
+    set.apply(3) should be (Some(3))
   }
 
   "A multiset" should "deconstruct in sequence" in {
@@ -34,9 +37,9 @@ class HashMultisetTest extends FlatSpec with Matchers {
   "Function" should "map int to string" in {
     val intSet = HashMultiset(1, 3, 3, 2)
     val stringSet = intSet.map { (v, c) => (v.toString, c) }
-    stringSet.apply("1") should be (1)
-    stringSet.apply("2") should be (1)
-    stringSet.apply("3") should be (2)
+    stringSet.apply("1") should be (Some(1))
+    stringSet.apply("2") should be (Some(1))
+    stringSet.apply("3") should be (Some(2))
   }
 
   "Function" should "flatmap string set to char set" in {
@@ -51,10 +54,10 @@ class HashMultisetTest extends FlatSpec with Matchers {
       }
     }
 
-    charSet.apply('a') should be (6)
-    charSet.apply('b') should be (6)
-    charSet.apply('d') should be (1)
-    charSet.apply('c') should be (0)
+    charSet.apply('a') should be (Some(6))
+    charSet.apply('b') should be (Some(6))
+    charSet.apply('d') should be (Some(1))
+    charSet.apply('c') should be (None)
   }
 
   it should "find element by predicate" in {

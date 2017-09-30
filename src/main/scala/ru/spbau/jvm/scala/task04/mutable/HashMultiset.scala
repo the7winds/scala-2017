@@ -41,7 +41,7 @@ class HashMultiset[T] {
     return s
   }
 
-  def add(e: T, c: Int): HashMultiset[T] = {
+  def add(e: T, c: Int = 1): HashMultiset[T] = {
     var i = e.hashCode() % S
     var l = set{i}
 
@@ -78,14 +78,29 @@ class HashMultiset[T] {
     return this
   }
 
-  def apply(v: T): Int = {
+  def apply(v: T): Option[Int] = {
     val i = v.hashCode() % S
     if (set{i} == null) {
-      set{i} = new mutable.MutableList[(T, Int)];
+      set{i} = new mutable.MutableList[(T, Int)]
     }
 
-    val (_, c) = set{i}.find { p => val (e, _) = p; v == e}.getOrElse((v, 0))
-    return c
+    set{i}.find { p => val (e, _) = p; v == e} match {
+      case None => None
+      case Some((_, c)) => Some(c)
+    }
+  }
+
+  def foreach(f: (T) => Unit): Unit = {
+    set.filter {
+      _ != null
+    }.foreach {
+      _.foreach {
+        p => {
+          val (v, c) = p
+          Range(0, c).foreach(_ => f(v))
+        }
+      }
+    }
   }
 
   def foreach(f: (T, Int) => Unit): Unit = {
@@ -104,6 +119,40 @@ class HashMultiset[T] {
   def find(f: (T, Int) => Boolean): Option[(T, Int)] = {
     foreach { (v, c) => if (f(v, c)) return Some(v, c) }
     return None
+  }
+
+  def ||(s: HashMultiset[T]): HashMultiset[T] = {
+    val unioun = new HashMultiset[T]
+
+    foreach {
+      (e, c) => unioun.add(e, c)
+    }
+
+    s.foreach {
+      (e, c) => unioun.add(e, c)
+    }
+
+    return unioun
+  }
+
+  def &&(s: HashMultiset[T]): HashMultiset[T] = {
+    val intersection = new HashMultiset[T]
+
+    foreach {
+      (e, c) => {
+        s.apply(e) match {
+          case None => ()
+          case Some(cs) => {
+            val ci = Math.min(cs, c)
+            if (ci > 0) {
+              intersection.add(e, ci)
+            }
+          }
+        }
+      }
+    }
+
+    return intersection
   }
 }
 
