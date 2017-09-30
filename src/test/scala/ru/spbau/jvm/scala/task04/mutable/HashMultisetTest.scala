@@ -18,9 +18,9 @@ class HashMultisetTest extends FlatSpec with Matchers {
   "A multiset" should "construct big set from sequence" in {
     val set = HashMultiset(1, 2, 1, 3, 3)
 
-    set.get(1) should be (2)
-    set.get(2) should be (1)
-    set.get(3) should be (2)
+    set.apply(1) should be (2)
+    set.apply(2) should be (1)
+    set.apply(3) should be (2)
   }
 
   "A multiset" should "deconstruct in sequence" in {
@@ -34,9 +34,9 @@ class HashMultisetTest extends FlatSpec with Matchers {
   "Function" should "map int to string" in {
     val intSet = HashMultiset(1, 3, 3, 2)
     val stringSet = intSet.map { (v, c) => (v.toString, c) }
-    stringSet.get("1") should be (1)
-    stringSet.get("2") should be (1)
-    stringSet.get("3") should be (2)
+    stringSet.apply("1") should be (1)
+    stringSet.apply("2") should be (1)
+    stringSet.apply("3") should be (2)
   }
 
   "Function" should "flatmap string set to char set" in {
@@ -51,10 +51,10 @@ class HashMultisetTest extends FlatSpec with Matchers {
       }
     }
 
-    charSet.get('a') should be (6)
-    charSet.get('b') should be (6)
-    charSet.get('d') should be (1)
-    charSet.get('c') should be (0)
+    charSet.apply('a') should be (6)
+    charSet.apply('b') should be (6)
+    charSet.apply('d') should be (1)
+    charSet.apply('c') should be (0)
   }
 
   it should "find element by predicate" in {

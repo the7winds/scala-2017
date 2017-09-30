@@ -78,7 +78,7 @@ class HashMultiset[T] {
     return this
   }
 
-  def get(v: T): Int = {
+  def apply(v: T): Int = {
     val i = v.hashCode() % S
     if (set{i} == null) {
       set{i} = new mutable.MutableList[(T, Int)];
