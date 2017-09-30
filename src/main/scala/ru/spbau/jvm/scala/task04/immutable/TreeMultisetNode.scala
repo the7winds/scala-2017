@@ -9,24 +9,33 @@ case class TreeMultisetNode[+A](v: A, c: Int, left: TreeMultiset[A], right: Tree
     right.foreach(f)
   }
 
+  override def foreach(f: (A, Int) => Unit): Unit = {
+    f(v, c)
+    left.foreach(f)
+    right.foreach(f)
+  }
+
   override def filter(p: (A) => Boolean): TreeMultiset[A] =
     if (p(v)) TreeMultisetNode(v, c, left.filter(p), right.filter(p))
-    else TreeMultiset.merge(left.filter(p), right.filter(p))
+    else left.filter(p) || right.filter(p)
 
   override def map[B](f: (A) => B): TreeMultiset[B] = {
     val mappedNode = Range(0, c)
       .map { _ => f(v) }
-      .foldLeft(TreeMultiset[B]()) { (s, e) => TreeMultiset(e, s) }
+      .foldLeft(TreeMultiset[B]()) { (s, e) => TreeMultiset(s, e) }
 
-    return TreeMultiset.merge(mappedNode, TreeMultiset.merge(left.map(f), right.map(f)))
+    val lm = left.map(f)
+    val rm = right.map(f)
+
+    return (mappedNode || lm) || rm
   }
 
   override def flatMap[B](f: (A) => TreeMultiset[B]): TreeMultiset[B] = {
     val mergedMaps = Range(0, c)
       .map { _ => f(v) }
-      .foldLeft(TreeMultiset[B]()) { (s, ms) => TreeMultiset.merge(s, ms) }
+      .foldLeft(TreeMultiset[B]()) { (s, ms) => s || ms }
 
-    return TreeMultiset.merge(mergedMaps, TreeMultiset.merge(left.flatMap(f), right.flatMap(f)))
+    return mergedMaps || left.flatMap(f) || right.flatMap(f)
   }
 
   override def toList(): List[A] = {
@@ -43,7 +52,7 @@ case class TreeMultisetNode[+A](v: A, c: Int, left: TreeMultiset[A], right: Tree
       case w => w
     }
 
-  override def get(e: Any): Option[Int] =
+  override def get[B >: A](e: B): Option[Int] =
     if (e == v) Some(c) else {
       if (e.hashCode() < v.hashCode()) {
         left.get(e)
@@ -51,4 +60,32 @@ case class TreeMultisetNode[+A](v: A, c: Int, left: TreeMultiset[A], right: Tree
         right.get(e)
       }
     }
+
+  override def ||[B >: A](t: TreeMultiset[B]): TreeMultiset[B] = {
+    t match {
+      case TreeMultisetLeaf() => return this
+      case _ =>
+    }
+
+    var (root, child) = if (size > t.size) (this, t) else (t, this)
+
+    child.foreach((e, c) => root = TreeMultiset(root, e, c))
+
+    return root
+  }
+
+  override def &&[B >: A](t: TreeMultiset[B]): TreeMultiset[B] = {
+    t match {
+      case TreeMultisetLeaf() => return TreeMultisetLeaf()
+      case _ =>
+    }
+
+    val (a, b) = if (size > t.size) (t, this) else (this, t)
+
+    var intersection = b
+
+    a.foreach { (x, c) => intersection = TreeMultiset(intersection, x, c) }
+
+    return intersection
+  }
 }

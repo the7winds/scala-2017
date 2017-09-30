@@ -5,6 +5,8 @@ case class TreeMultisetLeaf[+A]() extends TreeMultiset[A] {
 
   override def foreach(f: (A) => Unit): Unit = {}
 
+  override def foreach(f: (A, Int) => Unit): Unit = {}
+
   override def filter(p: (A) => Boolean): TreeMultiset[A] = TreeMultisetLeaf()
 
   override def map[B](f: (A) => B): TreeMultiset[B] = TreeMultisetLeaf()
@@ -15,5 +17,9 @@ case class TreeMultisetLeaf[+A]() extends TreeMultiset[A] {
 
   override def find(p: (A) => Boolean): None.type = None
 
-  override def get(v: Any): None.type = None
+  override def get[B >: A](v: B): None.type = None
+
+  override def ||[B >: A](t: TreeMultiset[B]): TreeMultiset[B] = t
+
+  override def &&[B >: A](t: TreeMultiset[B]): TreeMultiset[B] = TreeMultisetLeaf()
 }

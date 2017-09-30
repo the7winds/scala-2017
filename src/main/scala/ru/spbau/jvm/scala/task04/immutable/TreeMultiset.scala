@@ -4,43 +4,26 @@ trait TreeMultiset[+A] {
   val size: Int
   def filter(p: A => Boolean): TreeMultiset[A]
   def foreach(f: A => Unit): Unit
+  def foreach(f: (A, Int) => Unit): Unit
   def map[B](f: A => B): TreeMultiset[B]
   def flatMap[B](f: A => TreeMultiset[B]): TreeMultiset[B]
   def find(p: A => Boolean): Option[Int]
-  def get(v: Any): Option[Int]
+  def get[B >: A](v: B): Option[Int]
   def toList(): List[A]
+  def ||[B >: A](t: TreeMultiset[B]): TreeMultiset[B]
+  def &&[B >: A](t: TreeMultiset[B]): TreeMultiset[B]
 }
 
 object TreeMultiset {
-  def merge[T](a: TreeMultiset[T], b: TreeMultiset[T]): TreeMultiset[T] = {
-    a match {
-      case TreeMultisetLeaf() => return b
-      case _ => ()
-    }
-
-    b match {
-      case TreeMultisetLeaf() => return a
-      case _ => ()
-    }
-
-    var (root, child) = if (a.size > b.size) (a, b) else (b, a)
-
-    child.foreach(e => root = TreeMultiset(e, root))
-
-    return root
-  }
-
-  def apply[T](e: T, t: TreeMultiset[T]): TreeMultiset[T] = {
-    t match {
-      case TreeMultisetNode(v, c, l, r) => {
-        if (e == v) return TreeMultisetNode(v, c + 1, l, r)
-        if (e.hashCode() < v.hashCode()) {
-          return TreeMultisetNode(v, c, TreeMultiset(e, l), r)
-        } else {
-          return TreeMultisetNode(v, c, l, TreeMultiset(e, r))
-        }
+  def apply[T](t: TreeMultiset[T], e: T, c0: Int = 1): TreeMultiset[T] = t match {
+    case TreeMultisetLeaf() => TreeMultisetNode(e, c0, TreeMultisetLeaf(), TreeMultisetLeaf())
+    case TreeMultisetNode(v, c, l, r) => {
+      if (e == v) TreeMultisetNode(v, c + c0, l, r)
+      else if (e.hashCode() < v.hashCode()) {
+        TreeMultisetNode(v, c, TreeMultiset(l, e, c0), r)
+      } else {
+        TreeMultisetNode(v, c, l, TreeMultiset(r, e, c0))
       }
-      case TreeMultisetLeaf() => return TreeMultisetNode(e, 1, TreeMultisetLeaf(), TreeMultisetLeaf())
     }
   }
 
@@ -55,12 +38,12 @@ object TreeMultiset {
       var tmp = l
       if (tmp.size % 2 == 1) {
         val x1 :: x2 :: xs = tmp
-        tmp = TreeMultiset.merge(x1, x2) :: xs
+        tmp = (x1 || x2) :: xs
       }
       var tmp2: List[TreeMultiset[T]] = Nil
       while (tmp.nonEmpty) {
         val x1 :: x2 :: xs = tmp
-        tmp2 = TreeMultiset.merge(x1, x2) :: tmp2
+        tmp2 = (x1 || x2) :: tmp2
         tmp = xs
       }
       l = tmp2
