@@ -76,6 +76,20 @@ class HashMultisetTest extends FlatSpec with Matchers {
     }
   }
 
+  "A multiset" should "match" in {
+    HashMultiset("abba", "abba", "dabba", "zoom") match {
+      case HashMultiset(_, _, _, _) => ()
+    }
+
+    HashMultiset("zoom") match {
+      case HashMultiset(_) => ()
+    }
+
+    HashMultiset() match {
+      case HashMultiset() => ()
+    }
+  }
+
   "Sets" should "intersects" in {
     val s1 = HashMultiset(1, 2, 3, 3, 4, 5)
     val s2 = HashMultiset(1, 3, 3, 6)

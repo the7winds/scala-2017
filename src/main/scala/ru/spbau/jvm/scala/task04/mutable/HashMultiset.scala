@@ -163,9 +163,9 @@ object HashMultiset {
     return s
   }
 
-  def unapplySeq[T](e: HashMultiset[T]): Option[Seq[(T, Int)]] = {
-    val builder = Seq.newBuilder[(T, Int)]
-    e.foreach { (v, c) => builder += ((v, c))  }
+  def unapplySeq[T](e: HashMultiset[T]): Option[Seq[T]] = {
+    val builder = Seq.newBuilder[T]
+    e.foreach { v => builder += v  }
     return Some(builder.result())
   }
 }

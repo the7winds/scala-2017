@@ -52,10 +52,9 @@ object TreeMultiset {
     return l.head
   }
 
-  def unapplySeq[T](tree: TreeMultiset[T]): Option[Seq[T]] = {
-    tree match {
-      case TreeMultisetNode(_, _, _, _) => Some(tree.toList().seq)
-      case _ => None
-    }
+  def unapplySeq[T](e: TreeMultiset[T]): Option[Seq[T]] = {
+    val builder = Seq.newBuilder[T]
+    e.foreach { v => builder += v  }
+    return Some(builder.result())
   }
 }

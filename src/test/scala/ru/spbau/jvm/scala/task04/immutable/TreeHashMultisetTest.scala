@@ -19,11 +19,18 @@ class TreeHashMultisetTest extends FlatSpec with Matchers {
     set.apply('3') should be (Some(3))
   }
 
-  "A multiset" should "deconstruct in sequence" in {
-    val set = TreeMultiset('1', '2', '3')
 
-    set match {
-      case TreeMultiset(_, _, _) => ()
+  "A multiset" should "match" in {
+    TreeMultiset("abba", "abba", "dabba", "zoom") match {
+      case TreeMultiset(_, _, _, _) => ()
+    }
+
+    TreeMultiset("zoom") match {
+      case TreeMultiset(_) => ()
+    }
+
+    TreeMultiset() match {
+      case TreeMultiset() => ()
     }
   }
 
