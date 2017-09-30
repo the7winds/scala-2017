@@ -82,9 +82,19 @@ case class TreeMultisetNode[+A](v: A, c: Int, left: TreeMultiset[A], right: Tree
 
     val (a, b) = if (size > t.size) (t, this) else (this, t)
 
-    var intersection = b
+    var intersection = TreeMultiset[B]()
 
-    a.foreach { (x, c) => intersection = TreeMultiset(intersection, x, c) }
+    a.foreach { (x, c) =>
+      apply(x) match {
+        case None =>
+        case Some(c2) => {
+          val ci = Math.min(c2, c)
+          if (ci > 0) {
+            intersection = TreeMultiset(intersection, x, ci)
+          }
+        }
+      }
+    }
 
     return intersection
   }
