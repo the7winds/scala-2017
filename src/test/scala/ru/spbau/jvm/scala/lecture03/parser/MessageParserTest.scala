@@ -10,9 +10,11 @@ import ru.spbau.jvm.scala.lecture03.parser.messages.AddWord
   */
 class MessageParserTest extends FunSuite {
 
+  /*
   test("Добавить слово") {
     assertResult(AddWord("word", "слово")) {
       MessageParser.parse("Добавить слово word с переводом слово")
     }
   }
+  */
 }
