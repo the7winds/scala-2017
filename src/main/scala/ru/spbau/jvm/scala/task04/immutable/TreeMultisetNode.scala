@@ -46,8 +46,8 @@ case class TreeMultisetNode[+A](v: A, c: Int, left: TreeMultiset[A], right: Tree
     return b
   }
 
-  override def find(p: (A) => Boolean): Option[Int] =
-    if (p(v)) Some(c) else left.find(p) match {
+  override def find(p: (A) => Boolean): Option[(A, Int)] =
+    if (p(v)) Some(v, c) else left.find(p) match {
       case None => right.find(p)
       case w => w
     }

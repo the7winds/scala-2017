@@ -23,14 +23,17 @@ class TreeHashMultisetTest extends FlatSpec with Matchers {
   "A multiset" should "match" in {
     TreeMultiset("abba", "abba", "dabba", "zoom") match {
       case TreeMultiset(_, _, _, _) => ()
+      case _ => fail("can't match set")
     }
 
     TreeMultiset("zoom") match {
       case TreeMultiset(_) => ()
+      case _ => fail("can't match set")
     }
 
     TreeMultiset() match {
       case TreeMultiset() => ()
+      case _ => fail("can't match set")
     }
   }
 
@@ -55,8 +58,8 @@ class TreeHashMultisetTest extends FlatSpec with Matchers {
 
   it should "find element by predicate" in {
     val stringSet = TreeMultiset("abba", "abba", "dabba", "zoom")
-    val Some(1) = stringSet.find(_ == "zoom")
-    val None = stringSet.find(_ == "boom")
+    stringSet.find(_.contains("z")) should be (Some("zoom", 1))
+    stringSet.find(_ == "boom") should be (None)
   }
 
   "Predicate" should "filter elements" in {
@@ -66,6 +69,7 @@ class TreeHashMultisetTest extends FlatSpec with Matchers {
       _ == "zoom"
     } match {
       case None => ()
+      case _ => fail("can't filter elements")
     }
   }
 

@@ -26,14 +26,6 @@ class HashMultisetTest extends FlatSpec with Matchers {
     set.apply(3) should be (Some(3))
   }
 
-  "A multiset" should "deconstruct in sequence" in {
-    val set = HashMultiset('1', '2', '3')
-
-    set match {
-      case HashMultiset(_, _, _) => ()
-    }
-  }
-
   "Function" should "map int to string" in {
     val intSet = HashMultiset(1, 3, 3, 2)
     val stringSet = intSet.map { (v, c) => (v.toString, c) }
@@ -62,8 +54,8 @@ class HashMultisetTest extends FlatSpec with Matchers {
 
   it should "find element by predicate" in {
     val stringSet = HashMultiset("abba", "abba", "dabba", "zoom")
-    val Some((_, _)) = stringSet.find((v, _) => v == "zoom")
-    val None = stringSet.find((v, _) => v == "zzoom")
+    stringSet.find((v, _) => v.contains("z")) should be (Some("zoom", 1))
+    stringSet.find((v, _) => v == "boom") should be (None)
   }
 
   "Predicate" should "filter elements" in {
@@ -73,20 +65,24 @@ class HashMultisetTest extends FlatSpec with Matchers {
       (v, _) => v == "zoom"
     } match {
       case None => ()
+      case _ => fail("can't filter elements")
     }
   }
 
   "A multiset" should "match" in {
     HashMultiset("abba", "abba", "dabba", "zoom") match {
       case HashMultiset(_, _, _, _) => ()
+      case _ => fail("can't match set from 4 elements")
     }
 
     HashMultiset("zoom") match {
       case HashMultiset(_) => ()
+      case _ => fail("can't match set from 1 element")
     }
 
     HashMultiset() match {
       case HashMultiset() => ()
+      case _ => fail("can't match empty set")
     }
   }
 
